@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
     <style>
-        /* Общие стили и переменные */
+        /* =================== CSS СТИЛИ =================== */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -44,7 +44,7 @@
             overflow-x: hidden;
         }
 
-        /* 1. Шапка и навигация - Стили идентичны index.html */
+        /* Шапка и навигация - Идентичны первому экрану */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -104,7 +104,7 @@
             color: white;
         }
 
-        /* 2. Основной контент */
+        /* Контент и карточки */
         .content {
             padding: 0 20px;
         }
@@ -129,15 +129,14 @@
             color: var(--text-color);
         }
         
-        /* Стили для карточек детализации */
+        /* Стили для карточек детализации и кликабельности */
         .detail-card {
             padding: 15px 20px;
-            /* Стили для кликабельности: */
             cursor: pointer; 
             transition: transform 0.1s;
         }
         .detail-card:active {
-            transform: scale(0.98); /* Эффект нажатия */
+            transform: scale(0.98); 
         }
 
         .detail-card-header {
@@ -172,7 +171,7 @@
             width: 100px;
             height: 100px;
             margin-right: 10px;
-            flex-shrink: 0; /* Не сжимать */
+            flex-shrink: 0;
         }
         .chart-numbers {
             position: absolute;
@@ -181,16 +180,15 @@
             transform: translate(-50%, -50%);
             font-size: 12px;
             font-weight: 600;
-            color: #333; /* Сделаем темнее, чем в предыдущем коде */
+            color: #333; 
             text-align: center;
-            pointer-events: none; /* Чтобы не мешать клику на карточке */
+            pointer-events: none;
         }
         .chart-numbers div {
             position: absolute;
             transform: translate(-50%, -50%);
         }
         
-        /* Ручное позиционирование чисел (для имитации) */
         .num-10 { top: 30%; left: 30%; font-size: 11px;}
         .num-14 { top: 60%; left: 15%; font-size: 11px;}
         .num-6 { top: 85%; left: 30%; font-size: 11px;}
@@ -219,14 +217,13 @@
             margin-right: 8px;
         }
 
-        /* Цвета для детализации */
         .d-c1 { background-color: var(--detail-c1); }
         .d-c2 { background-color: var(--detail-c2); }
         .d-c3 { background-color: var(--detail-c3); }
         .d-c4 { background-color: var(--detail-c4); }
 
 
-        /* 3. Нижнее меню - Стили идентичны index.html */
+        /* Нижнее меню - Идентично первому экрану */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -319,6 +316,7 @@
             <h3>Детализация расходов</h3>
         </div>
 
+        
         <div class="card detail-card" id="childCard">
             <div class="detail-card-header">
                 <span class="color-swatch c1"></span>
@@ -344,6 +342,7 @@
             </div>
         </div>
 
+        
         <div class="card detail-card" id="parent1Card">
             <div class="detail-card-header">
                 <span class="color-swatch c2"></span>
@@ -369,6 +368,7 @@
             </div>
         </div>
 
+        
         <div class="card detail-card" id="parent2Card">
             <div class="detail-card-header">
                 <span class="color-swatch c3"></span>
@@ -426,85 +426,51 @@
     document.addEventListener('DOMContentLoaded', () => {
 
         const chartColors = ['#D9443A', '#F06E66', '#FFC0B9', '#FFECEB'];
-        const chartData = [10, 14, 6, 30, 40]; // Примерные данные для всех графиков
+        const chartData = [10, 14, 6, 30, 40]; 
         const chartOptions = {
             responsive: true,
             aspectRatio: 1, 
-            cutout: '60%', // Делаем пончиковую диаграмму
+            cutout: '60%', 
             plugins: {
                 legend: { display: false },
                 tooltip: { enabled: false }
             }
         };
 
-        // 1. График "Ребенок"
-        new Chart(document.getElementById('childChart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Одежда', 'Игрушки', 'Развлечения', 'Питание'], 
-                datasets: [{
-                    data: chartData, 
-                    backgroundColor: chartColors,
-                    borderWidth: 0,
-                    hoverOffset: 0
-                }]
-            },
-            options: chartOptions
-        });
-
-        // 2. График "Родитель #1"
-        new Chart(document.getElementById('parent1Chart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Еда', 'Транспорт', 'Подарки', 'Развлечения'], 
-                datasets: [{
-                    data: chartData, 
-                    backgroundColor: chartColors,
-                    borderWidth: 0,
-                    hoverOffset: 0
-                }]
-            },
-            options: chartOptions
-        });
-        
-        // 3. График "Родитель #2"
-        new Chart(document.getElementById('parent2Chart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Коммуналка', 'Продукты', 'Спорт', 'Отдых'], 
-                datasets: [{
-                    data: chartData, 
-                    backgroundColor: chartColors,
-                    borderWidth: 0,
-                    hoverOffset: 0
-                }]
-            },
-            options: chartOptions
-        });
+        // Инициализация 3-х графиков
+        new Chart(document.getElementById('childChart').getContext('2d'), { type: 'doughnut', data: { labels: ['Одежда', 'Игрушки', 'Развлечения', 'Питание'], datasets: [{ data: chartData, backgroundColor: chartColors, borderWidth: 0, hoverOffset: 0 }] }, options: chartOptions });
+        new Chart(document.getElementById('parent1Chart').getContext('2d'), { type: 'doughnut', data: { labels: ['Еда', 'Транспорт', 'Подарки', 'Развлечения'], datasets: [{ data: chartData, backgroundColor: chartColors, borderWidth: 0, hoverOffset: 0 }] }, options: chartOptions });
+        new Chart(document.getElementById('parent2Chart').getContext('2d'), { type: 'doughnut', data: { labels: ['Коммуналка', 'Продукты', 'Спорт', 'Отдых'], datasets: [{ data: chartData, backgroundColor: chartColors, borderWidth: 0, hoverOffset: 0 }] }, options: chartOptions });
 
 
         // ЛОГИКА КЛИКАБЕЛЬНОСТИ:
         document.querySelectorAll('.detail-card').forEach(card => {
             const title = card.querySelector('h3').textContent;
             card.addEventListener('click', () => {
-                // При нажатии выводим сообщение о переходе
-                alert(`Переход к детализированным тратам для: ${title}. (Например, откроется список транзакций)`);
-                // Для реального прототипа здесь будет window.location.href = 'super-detail.html?person=' + title;
+                alert(`Переход к детализированным тратам для: ${title}.`);
             });
         });
+
+        const mainScreenFile = 'Аналитика расходов (Основной экран).html';
 
         // ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ТАБОВ
         // Переход на первый экран (Вся аналитика)
         document.getElementById('allAnalyticsTab').addEventListener('click', () => {
-             window.location.href = 'Аналитика расходов (Основной экран).html';
+             window.location.href = mainScreenFile;
         });
 
         // Переход назад на первый экран (по стрелке)
         document.querySelector('.back-button').addEventListener('click', () => {
-             window.location.href = 'Аналитика расходов (Основной экран).html';
+             window.location.href = mainScreenFile;
         });
-
-        // Вкладка "Доходы" пока просто меняет свою активность
+        
+        // Вкладка "Расходы" (остаемся здесь)
+        document.getElementById('expensesTab').addEventListener('click', (e) => {
+             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+             e.target.classList.add('active');
+        });
+        
+        // Вкладка "Доходы"
         document.getElementById('incomeTab').addEventListener('click', (e) => {
              document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
              e.target.classList.add('active');
