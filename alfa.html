@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Аналитика расходов (Прототип)</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -24,13 +24,13 @@
     <header class="header-nav">
         <div class="back-settings">
             <i class="fas fa-chevron-left"></i>
-            <i class="fas fa-sliders-h"></i>
+            <i class="fas fa-sliders-h settings-icon"></i>
         </div>
         
         <div class="month-selector">
             <h1>Октябрь</h1>
             <div class="arrows">
-                <i class="fas fa-chevron-left"></i>
+                <i class="fas fa-chevron-left disabled-arrow"></i>
                 <i class="fas fa-chevron-right"></i>
             </div>
         </div>
@@ -47,13 +47,15 @@
         <div class="card banner-card">
             <div class="banner-text">
                 <h3>Семейная аналитика расходов</h3>
-                <p>Статистика по семейным тратам $\to$</p>
+                <p>Статистика по семейным тратам <span class="arrow-right">→</span></p>
             </div>
             <div class="alfa-icon-a">A</div>
         </div>
 
         <div class="card chart-card">
-            <canvas id="expenseChart"></canvas>
+            <div class="chart-canvas-wrapper">
+                <canvas id="expenseChart"></canvas>
+            </div>
             
             <div class="chart-footer">
                 <ul class="legend">
@@ -72,7 +74,7 @@
         <div class="card banner-card ai-card">
             <div class="banner-text">
                 <h3>Рекомендации ИИ</h3>
-                <p>На базе семейных расходов $\to$</p>
+                <p>На базе семейных расходов <span class="arrow-right">→</span></p>
             </div>
             <button class="ai-button">Альфа-ИИ<i class="fas fa-plus-circle"></i></button>
         </div>
@@ -80,13 +82,13 @@
     </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item">
+        <div class="nav-item active-nav">
             <i class="fas fa-home"></i>
             <span>Главный</span>
         </div>
-        <div class="nav-item active-nav">
+        <div class="nav-item">
             <i class="fas fa-credit-card"></i>
-            <span class="badge">1</span>
+            <span class="badge one">1</span>
             <span>Платежи</span>
         </div>
         <div class="nav-item">
