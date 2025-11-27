@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семейная аналитика</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --alfa-red: #EF3124;
+            --bg-gray: #F3F4F6;
+            --text-dark: #0B0B0B;
+        }
+        body { margin: 0; font-family: 'Roboto', sans-serif; background: #e0e0e0; display: flex; justify-content: center; }
+        .app-screen {
+            width: 100%; max-width: 390px; background: #fff; min-height: 100vh; position: relative; padding-bottom: 80px;
+        }
+        /* Стили для вкладок, карточек и графика нужно добавить сюда */
+        .chart-container { padding: 20px; }
+        .custom-legend { list-style: none; padding: 0; }
+        .legend-item span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="app-screen">
+    <div class="header">...</div>
+    
+    <div class="banner">...</div>
+
+    <div class="card chart-card">
+        <canvas id="myChart"></canvas>
+        <ul class="custom-legend">
+            <li class="legend-item"><span style="background:#8B1A1A"></span>Ребенок</li>
+            <li class="legend-item"><span style="background:#CC2222"></span>Родитель #1</li>
+            <li class="legend-item"><span style="background:#E04444"></span>Родитель #2</li>
+        </ul>
+    </div>
+
+    <nav class="bottom-nav">...</nav>
+</div>
+
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Ребенок', 'Родитель #1', 'Родитель #2'],
+            datasets: [{
+                data: [15, 25, 60], // Примерные данные
+                backgroundColor: ['#8B1A1A', '#CC2222', '#E04444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } } // Скрываем стандартную легенду
+        }
+    });
+</script>
+
+</body>
+</html>
