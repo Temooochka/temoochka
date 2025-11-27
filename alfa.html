@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аналитика расходов (Основной экран)</title>
+    <title>Детализация расходов</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
     <style>
-        /* CSS ИЗ ПРЕДЫДУЩЕГО ОТВЕТА - СЮДА НЕОБХОДИМО ВСТАВИТЬ ВЕСЬ ВАШ CSS, 
-           КОТОРЫЙ Я ДАВАЛ В ПРЕДЫДУЩЕМ ОТВЕТЕ */
-        /* Начинается здесь: */
-
+        /* Общие стили и переменные */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -28,6 +25,12 @@
             --bg-light-gray: #F7F7F7;
             --text-color: #333;
             --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            
+            /* Цвета для детализации пончиковых диаграмм */
+            --detail-c1: #D9443A; 
+            --detail-c2: #F06E66; 
+            --detail-c3: #FFC0B9; 
+            --detail-c4: #FFECEB; 
         }
 
         .app-screen {
@@ -41,6 +44,7 @@
             overflow-x: hidden;
         }
 
+        /* 1. Шапка и навигация - Стили идентичны index.html */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -49,11 +53,9 @@
             font-weight: 600;
         }
         .status-icons i { margin-left: 5px; }
-
         .header-nav {
             padding: 0 20px;
         }
-
         .back-settings {
             display: flex;
             justify-content: space-between;
@@ -64,7 +66,6 @@
         .settings-icon {
             transform: rotate(90deg);
         }
-
         .month-selector {
             display: flex;
             justify-content: space-between;
@@ -83,7 +84,6 @@
         .disabled-arrow {
             color: #ccc;
         }
-
         .tabs {
             display: flex;
             gap: 8px;
@@ -104,10 +104,10 @@
             color: white;
         }
 
+        /* 2. Основной контент */
         .content {
             padding: 0 20px;
         }
-
         .card {
             background-color: white;
             border-radius: 20px;
@@ -115,115 +115,118 @@
             margin-bottom: 20px;
             padding: 20px;
         }
-
-        .banner-card {
+        .banner-card { 
             background-color: var(--bg-light-gray);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .banner-text h3 {
-            font-size: 16px;
-            margin: 0 0 5px 0;
-            font-weight: 600;
-        }
-        .banner-text p {
-            font-size: 14px;
-            margin: 0;
-            color: #666;
-            display: flex;
-            align-items: center;
-        }
-        .arrow-right {
-            font-size: 20px;
-            line-height: 0;
-            margin-left: 5px;
-        }
-
-        .alfa-icon-a {
-            width: 30px;
-            height: 30px;
-            background-color: var(--alfa-red);
-            color: white;
-            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .ai-card {
             padding: 15px 20px;
         }
-        .ai-button {
-            background: linear-gradient(90deg, #F06E66, var(--alfa-red));
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 18px;
+        .banner-card h3 {
+            font-size: 18px; 
+            margin: 0;
             font-weight: 600;
-            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        /* Стили для карточек детализации */
+        .detail-card {
+            padding: 15px 20px;
+            /* Стили для кликабельности: */
+            cursor: pointer; 
+            transition: transform 0.1s;
+        }
+        .detail-card:active {
+            transform: scale(0.98); /* Эффект нажатия */
+        }
+
+        .detail-card-header {
             display: flex;
             align-items: center;
-            cursor: pointer;
-        }
-        .ai-button i {
-            font-size: 10px;
-            margin-left: 5px;
-            color: white;
-        }
-
-        .chart-card {
-            padding: 20px 20px 10px 20px;
-            text-align: center;
-        }
-
-        .chart-canvas-wrapper {
-            max-width: 250px;
-            margin: 0 auto 10px auto;
-        }
-
-        .chart-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 10px;
-        }
-
-        .legend {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+            margin-bottom: 15px;
             text-align: left;
         }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 16px;
-            line-height: 1.2;
-        }
-        .color-swatch {
-            display: inline-block;
+        .detail-card-header .color-swatch {
             width: 14px;
             height: 14px;
             border-radius: 50%;
             margin-right: 10px;
         }
-
         .c1 { background-color: var(--red-c1-dark); }
         .c2 { background-color: var(--red-c2-medium); }
         .c3 { background-color: var(--red-c3-light); }
-        .bold { font-weight: 700; }
-
-        .actions i {
-            font-size: 22px;
-            color: #666;
-            margin-left: 20px;
-            cursor: pointer;
+        
+        .detail-card-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
         }
 
+        .detail-chart-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .detail-chart-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+            flex-shrink: 0; /* Не сжимать */
+        }
+        .chart-numbers {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: #333; /* Сделаем темнее, чем в предыдущем коде */
+            text-align: center;
+            pointer-events: none; /* Чтобы не мешать клику на карточке */
+        }
+        .chart-numbers div {
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Ручное позиционирование чисел (для имитации) */
+        .num-10 { top: 30%; left: 30%; font-size: 11px;}
+        .num-14 { top: 60%; left: 15%; font-size: 11px;}
+        .num-6 { top: 85%; left: 30%; font-size: 11px;}
+        .num-30 { top: 80%; left: 75%; font-size: 11px;}
+        .num-40 { top: 25%; left: 80%; font-size: 11px;}
+        
+        .detail-legend {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1; 
+        }
+        .detail-legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+            text-align: left;
+        }
+        .detail-legend-swatch {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        /* Цвета для детализации */
+        .d-c1 { background-color: var(--detail-c1); }
+        .d-c2 { background-color: var(--detail-c2); }
+        .d-c3 { background-color: var(--detail-c3); }
+        .d-c4 { background-color: var(--detail-c4); }
+
+
+        /* 3. Нижнее меню - Стили идентичны index.html */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -241,7 +244,6 @@
             font-size: 11px;
             color: #888;
         }
-
         .nav-item {
             display: flex;
             flex-direction: column;
@@ -254,7 +256,6 @@
             font-size: 22px;
             margin-bottom: 4px;
         }
-
         .badge {
             position: absolute;
             top: 0px; 
@@ -273,11 +274,9 @@
         .nav-item:last-child .badge { 
             right: 20px; 
         }
-
         .active-nav i, .active-nav span:not(.badge) { 
             color: var(--alfa-red);
         }
-        /* Конец CSS из предыдущего ответа */
     </style>
 </head>
 <body>
@@ -295,7 +294,7 @@
 
     <header class="header-nav">
         <div class="back-settings">
-            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-left back-button"></i>
             <i class="fas fa-sliders-h settings-icon"></i>
         </div>
         
@@ -308,47 +307,91 @@
         </div>
         
         <div class="tabs">
-            <button class="tab" id="expensesTab">Расходы</button>
+            <button class="tab active" id="expensesTab">Расходы</button>
             <button class="tab" id="incomeTab">Доходы</button>
-            <button class="tab active" id="allAnalyticsTab">Вся аналитика</button>
+            <button class="tab" id="allAnalyticsTab">Вся аналитика</button>
         </div>
     </header>
 
     <main class="content">
 
         <div class="card banner-card">
-            <div class="banner-text">
-                <h3>Семейная аналитика расходов</h3>
-                <p>Статистика по семейным тратам <span class="arrow-right">→</span></p>
-            </div>
-            <div class="alfa-icon-a">A</div>
+            <h3>Детализация расходов</h3>
         </div>
 
-        <div class="card chart-card">
-            <div class="chart-canvas-wrapper">
-                <canvas id="expenseChart"></canvas>
+        <div class="card detail-card" id="childCard">
+            <div class="detail-card-header">
+                <span class="color-swatch c1"></span>
+                <h3>Ребенок</h3>
             </div>
-            
-            <div class="chart-footer">
-                <ul class="legend">
-                    <li class="legend-item"><span class="color-swatch c1"></span>Ребенок</li>
-                    <li class="legend-item"><span class="color-swatch c2"></span><span class="bold">Родитель #1</span></li>
-                    <li class="legend-item"><span class="color-swatch c3"></span><span class="bold">Родитель #2</span></li>
-                </ul>
-
-                <div class="actions">
-                    <i class="fas fa-pencil-alt"></i>
-                    <i class="fas fa-download"></i>
+            <div class="detail-chart-row">
+                <div class="detail-chart-wrapper">
+                    <canvas id="childChart"></canvas>
+                    <div class="chart-numbers">
+                        <div class="num-10">10</div>
+                        <div class="num-14">14</div>
+                        <div class="num-6">6</div>
+                        <div class="num-30">30</div>
+                        <div class="num-40">40</div>
+                    </div>
                 </div>
+                <ul class="detail-legend">
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c1"></span>Одежда</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c2"></span>Игрушки</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c3"></span>Развлечения</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c4"></span>Питание</li>
+                </ul>
             </div>
         </div>
 
-        <div class="card banner-card ai-card">
-            <div class="banner-text">
-                <h3>Рекомендации ИИ</h3>
-                <p>На базе семейных расходов <span class="arrow-right">→</span></p>
+        <div class="card detail-card" id="parent1Card">
+            <div class="detail-card-header">
+                <span class="color-swatch c2"></span>
+                <h3>Родитель #1</h3>
             </div>
-            <button class="ai-button">Альфа-ИИ<i class="fas fa-plus-circle"></i></button>
+            <div class="detail-chart-row">
+                <div class="detail-chart-wrapper">
+                    <canvas id="parent1Chart"></canvas>
+                    <div class="chart-numbers">
+                        <div class="num-10">10</div>
+                        <div class="num-14">14</div>
+                        <div class="num-6">6</div>
+                        <div class="num-30">30</div>
+                        <div class="num-40">40</div>
+                    </div>
+                </div>
+                <ul class="detail-legend">
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c1"></span>Еда</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c2"></span>Транспорт</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c3"></span>Подарки</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c4"></span>Развлечения</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card detail-card" id="parent2Card">
+            <div class="detail-card-header">
+                <span class="color-swatch c3"></span>
+                <h3>Родитель #2</h3>
+            </div>
+            <div class="detail-chart-row">
+                <div class="detail-chart-wrapper">
+                    <canvas id="parent2Chart"></canvas>
+                    <div class="chart-numbers">
+                        <div class="num-10">10</div>
+                        <div class="num-14">14</div>
+                        <div class="num-6">6</div>
+                        <div class="num-30">30</div>
+                        <div class="num-40">40</div>
+                    </div>
+                </div>
+                <ul class="detail-legend">
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c1"></span>Коммуналка</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c2"></span>Продукты</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c3"></span>Спорт</li>
+                    <li class="detail-legend-item"><span class="detail-legend-swatch d-c4"></span>Отдых</li>
+                </ul>
+            </div>
         </div>
 
     </main>
@@ -381,53 +424,92 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Логика для графика на текущей странице (Вся аналитика)
-        const ctx = document.getElementById('expenseChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
+
+        const chartColors = ['#D9443A', '#F06E66', '#FFC0B9', '#FFECEB'];
+        const chartData = [10, 14, 6, 30, 40]; // Примерные данные для всех графиков
+        const chartOptions = {
+            responsive: true,
+            aspectRatio: 1, 
+            cutout: '60%', // Делаем пончиковую диаграмму
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            }
+        };
+
+        // 1. График "Ребенок"
+        new Chart(document.getElementById('childChart').getContext('2d'), {
+            type: 'doughnut',
             data: {
-                labels: ['Ребенок', 'Родитель #1', 'Родитель #2'], 
+                labels: ['Одежда', 'Игрушки', 'Развлечения', 'Питание'], 
                 datasets: [{
-                    data: [15, 30, 55], 
-                    backgroundColor: ['#801818', '#C02929', '#E04444'],
+                    data: chartData, 
+                    backgroundColor: chartColors,
                     borderWidth: 0,
                     hoverOffset: 0
                 }]
             },
-            options: {
-                responsive: true,
-                aspectRatio: 1, 
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
-                }
-            }
+            options: chartOptions
         });
 
-        // Логика переключения табов
-        const expensesTab = document.getElementById('expensesTab');
-        const allAnalyticsTab = document.getElementById('allAnalyticsTab');
-
-        expensesTab.addEventListener('click', () => {
-            window.location.href = 'details.html'; // Переход на новую страницу
-        });
-
-        // Можно добавить логику для allAnalyticsTab, если нужно
-        allAnalyticsTab.addEventListener('click', () => {
-             // Просто деактивируем все остальные и активируем этот таб, 
-             // если мы уже на этой странице или хотим остаться
-             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-             allAnalyticsTab.classList.add('active');
+        // 2. График "Родитель #1"
+        new Chart(document.getElementById('parent1Chart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Еда', 'Транспорт', 'Подарки', 'Развлечения'], 
+                datasets: [{
+                    data: chartData, 
+                    backgroundColor: chartColors,
+                    borderWidth: 0,
+                    hoverOffset: 0
+                }]
+            },
+            options: chartOptions
         });
         
-        // Вкладка "Доходы" пока просто меняет свою активность, без перехода
-        const incomeTab = document.getElementById('incomeTab');
-        incomeTab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            incomeTab.classList.add('active');
-            // Если будет экран для доходов, здесь можно будет добавить window.location.href = 'income.html';
+        // 3. График "Родитель #2"
+        new Chart(document.getElementById('parent2Chart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Коммуналка', 'Продукты', 'Спорт', 'Отдых'], 
+                datasets: [{
+                    data: chartData, 
+                    backgroundColor: chartColors,
+                    borderWidth: 0,
+                    hoverOffset: 0
+                }]
+            },
+            options: chartOptions
         });
 
+
+        // ЛОГИКА КЛИКАБЕЛЬНОСТИ:
+        document.querySelectorAll('.detail-card').forEach(card => {
+            const title = card.querySelector('h3').textContent;
+            card.addEventListener('click', () => {
+                // При нажатии выводим сообщение о переходе
+                alert(`Переход к детализированным тратам для: ${title}. (Например, откроется список транзакций)`);
+                // Для реального прототипа здесь будет window.location.href = 'super-detail.html?person=' + title;
+            });
+        });
+
+        // ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ТАБОВ
+        // Переход на первый экран (Вся аналитика)
+        document.getElementById('allAnalyticsTab').addEventListener('click', () => {
+             window.location.href = 'Аналитика расходов (Основной экран).html';
+        });
+
+        // Переход назад на первый экран (по стрелке)
+        document.querySelector('.back-button').addEventListener('click', () => {
+             window.location.href = 'Аналитика расходов (Основной экран).html';
+        });
+
+        // Вкладка "Доходы" пока просто меняет свою активность
+        document.getElementById('incomeTab').addEventListener('click', (e) => {
+             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+             e.target.classList.add('active');
+             alert('Экран доходов еще не разработан.');
+        });
     });
 </script>
 </body>
